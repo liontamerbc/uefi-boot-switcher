@@ -1,23 +1,57 @@
-# UEFI Boot Switcher (bash + GTK/zenity)
+<!-- Optional banner slot -->
+<!-- <p align="center"><img src="YOUR_BANNER_URL_HERE" alt="UEFI Boot Switcher Banner" /></p> -->
 
-Pick your next UEFI boot entry from a GUI instead of diving into firmware menus.
+<h1 align="center">🦁 UEFI Boot Switcher 🦁</h1>
+<h3 align="center">Pick your next boot target from a friendly GUI</h3>
 
-## Requirements
-- `python3-gi` (Gtk 3) for the centered radio UI (auto-falls back to zenity if missing).
-- `zenity` (dialogs).
-- `efibootmgr` for managing EFI boot entries.
-- `sudo` privileges (the script prompts via GUI and pipes the password to sudo).
+<p align="center">Pick your next UEFI boot entry from a GUI instead of diving into firmware menus.</p>
 
-## Run
-```
+<p align="center">━━✦━━</p>
+
+<h3 align="center">🛠️ Stack & Requirements</h3>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Linux-8B0000?style=for-the-badge&logo=linux&logoColor=F5F5F5" />
+  <img src="https://img.shields.io/badge/bash-7C5E3C?style=for-the-badge&logo=gnu-bash&logoColor=F5F5F5" />
+  <img src="https://img.shields.io/badge/GTK3-C19A3F?style=for-the-badge&logo=gtk&logoColor=1C1C1C" />
+  <img src="https://img.shields.io/badge/zenity-1C1C1C?style=for-the-badge&logo=gnome&logoColor=C19A3F" />
+  <img src="https://img.shields.io/badge/efibootmgr-F1551D?style=for-the-badge&logo=linux&logoColor=F5F5F5" />
+</p>
+
+<ul>
+  <li><strong>python3-gi (GTK 3)</strong> powers the centered radio UI—automatically falls back to zenity if GTK is missing.</li>
+  <li><strong>zenity</strong> for dialogs when GTK isn’t available.</li>
+  <li><strong>efibootmgr</strong> to list and set firmware entries.</li>
+  <li><strong>sudo privileges</strong>; the script prompts via GUI and pipes your password to sudo.</li>
+</ul>
+
+<h3 align="center">🚀 Run It</h3>
+
+```bash
 ./uefi-boot-switcher.sh
 ```
-If run from a launcher, ensure you can enter your sudo password when prompted (via the GUI dialog).
 
-## What it shows
-- Tries to filter for entries that look like installed OS bootloaders (Windows/Linux/grub/shim/bootmgfw).
-- Skips obvious network/DVD/USB placeholders. If nothing survives filtering, it falls back to showing all firmware entries so you can still pick one.
+<p>If you launch it from a desktop shortcut, make sure the password dialog can appear so you can enter sudo credentials.</p>
 
-## Notes
-- This sets `BootNext` only; it does not reorder permanent `BootOrder`.
-- If no entries appear, run `sudo efibootmgr -v` to verify firmware entries exist. Share that output if you need the filter tuned to your firmware format.
+<p align="center">━━✦━━</p>
+
+<h3 align="center">🧭 What You’ll See</h3>
+<ul>
+  <li>Filters for entries that look like OS bootloaders (Windows/Linux/grub/shim/bootmgfw).</li>
+  <li>Skips obvious network/DVD/USB placeholders.</li>
+  <li>If filtering yields nothing, it will show every firmware entry so you can still pick one.</li>
+</ul>
+
+<h3 align="center">🧩 Notes & Safety</h3>
+<ul>
+  <li>Sets <code>BootNext</code> only; it does not reorder your permanent <code>BootOrder</code>.</li>
+  <li>If no entries appear, run <code>sudo efibootmgr -v</code> to verify firmware entries exist—share that output if you need the filter tuned for your firmware format.</li>
+</ul>
+
+<p align="center" style="color:#F1551D; font-family:JetBrains Mono; font-size:18px;">
+  ───────────── ✝ ─────────────
+</p>
+
+<p align="center" style="color:#F1551D; font-family:JetBrains Mono; font-size:18px;">
+  🦁 Built for smooth reboots — choose boldly, boot cleanly.
+</p>
