@@ -58,3 +58,7 @@
 <p align="center" style="color:#F1551D; font-family:JetBrains Mono; font-size:18px;">
   🦁 Built for smooth reboots — choose boldly, boot cleanly.
 </p>
+
+<p align="center" style="font-size:12px;">
+  Licensing: GPL-3.0 — see <a href="LICENSE">LICENSE</a>.
+</p>
