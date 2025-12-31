@@ -13,8 +13,8 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Linux-8B0000?style=for-the-badge&logo=linux&logoColor=F5F5F5" />
   <img src="https://img.shields.io/badge/efibootmgr-F1551D?style=for-the-badge&logo=linux&logoColor=F5F5F5" />
-  <img src="https://img.shields.io/badge/bash-7C5E3C?style=for-the-badge&logo=gnu-bash&logoColor=F5F5F5" />
   <img src="https://img.shields.io/badge/GTK3-C19A3F?style=for-the-badge&logo=gtk&logoColor=1C1C1C" />
+  <img src="https://img.shields.io/badge/bash-7C5E3C?style=for-the-badge&logo=gnu-bash&logoColor=F5F5F5" />
   <img src="https://img.shields.io/badge/zenity-1C1C1C?style=for-the-badge&logo=gnome&logoColor=C19A3F" />
 </p>
 
