@@ -46,6 +46,8 @@
 <ul>
   <li>Sets <code>BootNext</code> only; it does not reorder your permanent <code>BootOrder</code>.</li>
   <li>If no entries appear, run <code>sudo efibootmgr -v</code> to verify firmware entries exist—share that output if you need the filter tuned for your firmware format.</li>
+  <li>Requires sudo; the script prompts via GUI and only sets the next boot, never writes a new BootOrder.</li>
+  <li>If entries are missing, ensure firmware/BIOS is not hiding them (e.g., fast boot) and that <code>efibootmgr -v</code> shows them.</li>
 </ul>
 
 <p align="center" style="color:#F1551D; font-family:JetBrains Mono; font-size:18px;">
