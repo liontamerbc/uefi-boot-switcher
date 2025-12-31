@@ -59,6 +59,7 @@
   🦁 Built for smooth reboots — choose boldly, boot cleanly.
 </p>
 
+<h4 align="center">📜 Licensing</h4>
 <p align="center" style="font-size:12px;">
   Licensing: GPL-3.0 — see <a href="LICENSE">LICENSE</a> and <a href="NOTICE">NOTICE</a>.
 </p>
