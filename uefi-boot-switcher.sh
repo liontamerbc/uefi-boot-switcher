@@ -3,15 +3,103 @@
 
 set -euo pipefail
 
-if ! command -v zenity >/dev/null 2>&1; then
-  echo "zenity is required (install zenity or provide a GUI dialog tool)" >&2
+sudo_bin="$(command -v sudo || true)"
+if [[ -z "$sudo_bin" ]]; then
+  echo "sudo is required to manage UEFI entries." >&2
   exit 1
 fi
 
-if ! command -v efibootmgr >/dev/null 2>&1; then
-  zenity --error --title="UEFI Boot Switcher" --text="efibootmgr is not installed. Install it first."
-  exit 1
+PKG_MGR=""
+if command -v apt-get >/dev/null 2>&1; then
+  PKG_MGR="apt"
+elif command -v pacman >/dev/null 2>&1; then
+  PKG_MGR="pacman"
+elif command -v dnf >/dev/null 2>&1; then
+  PKG_MGR="dnf"
+elif command -v zypper >/dev/null 2>&1; then
+  PKG_MGR="zypper"
 fi
+
+install_pkg() {
+  case "$PKG_MGR" in
+    apt)
+      sudo apt-get -y install "$@"
+      ;;
+    pacman)
+      sudo pacman -S --needed --noconfirm "$@"
+      ;;
+    dnf)
+      sudo dnf -y install "$@"
+      ;;
+    zypper)
+      sudo zypper --non-interactive install --no-recommends "$@"
+      ;;
+    *)
+      echo "No supported package manager detected; please install dependencies manually." >&2
+      return 1
+      ;;
+  esac
+}
+
+ensure_dep() {
+  local cmd="$1" apt_pkg="$2" pac_pkg="$3" dnf_pkg="$4" zypper_pkg="$5"
+  if command -v "$cmd" >/dev/null 2>&1; then
+    return 0
+  fi
+
+  local pkg=""
+  case "$PKG_MGR" in
+    apt) pkg="$apt_pkg" ;;
+    pacman) pkg="$pac_pkg" ;;
+    dnf) pkg="$dnf_pkg" ;;
+    zypper) pkg="$zypper_pkg" ;;
+    *) ;;
+  esac
+
+  if [[ -z "$pkg" ]]; then
+    echo "Missing dependency: $cmd. Install it manually." >&2
+    return 1
+  fi
+
+  echo "Installing $pkg to satisfy $cmd..."
+  install_pkg "$pkg" || {
+    echo "Failed to install $pkg. Please install $cmd manually." >&2
+    exit 1
+  }
+}
+
+ensure_dep "zenity" "zenity" "zenity" "zenity" "zenity"
+ensure_dep "efibootmgr" "efibootmgr" "efibootmgr" "efibootmgr" "efibootmgr"
+
+# Optional: try to install python3-gi for the centered GTK UI
+ensure_python_gi() {
+  if ! command -v python3 >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if python3 - <<'PY' >/dev/null 2>&1
+import gi  # noqa: F401
+PY
+  then
+    return 0
+  fi
+
+  local pkg=""
+  case "$PKG_MGR" in
+    apt) pkg="python3-gi" ;;
+    pacman) pkg="python-gobject" ;;
+    dnf) pkg="python3-gobject" ;;
+    zypper) pkg="python3-gobject" ;;
+    *) pkg="" ;;
+  esac
+
+  if [[ -n "$pkg" ]]; then
+    echo "Installing $pkg to enable the centered GTK UI..."
+    install_pkg "$pkg" || echo "Could not install $pkg; falling back to zenity UI." >&2
+  fi
+}
+
+ensure_python_gi
 
 password_cache=""
 password_cancelled=0

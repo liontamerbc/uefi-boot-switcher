@@ -32,6 +32,7 @@
 ```
 
 <p>If you launch it from a desktop shortcut, make sure the password dialog can appear so you can enter sudo credentials.</p>
+<p><strong>Dependencies:</strong> the script will try to install <code>zenity</code>, <code>efibootmgr</code>, and (optionally) <code>python3-gi</code> via your package manager (apt/pacman/dnf/zypper). If your distro uses something else, install those manually first.</p>
 
 <p align="center">━━✦━━</p>
 
