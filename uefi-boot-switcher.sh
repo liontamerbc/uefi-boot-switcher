@@ -3,6 +3,11 @@
 
 set -euo pipefail
 
+if [[ ! -d /sys/firmware/efi ]]; then
+  echo "This system does not appear to be booted in UEFI mode (/sys/firmware/efi missing)." >&2
+  exit 1
+fi
+
 sudo_bin="$(command -v sudo || true)"
 if [[ -z "$sudo_bin" ]]; then
   echo "sudo is required to manage UEFI entries." >&2
@@ -41,6 +46,24 @@ install_pkg() {
   esac
 }
 
+NO_INSTALL=0
+NO_REBOOT=0
+
+for arg in "$@"; do
+  case "$arg" in
+    --no-install) NO_INSTALL=1 ;;
+    --no-reboot) NO_REBOOT=1 ;;
+    --help|-h)
+      cat <<EOF
+Usage: $0 [--no-install] [--no-reboot]
+  --no-install  Skip automatic dependency installs.
+  --no-reboot   Set BootNext but do not reboot automatically.
+EOF
+      exit 0
+      ;;
+  esac
+done
+
 ensure_dep() {
   local cmd="$1" apt_pkg="$2" pac_pkg="$3" dnf_pkg="$4" zypper_pkg="$5"
   if command -v "$cmd" >/dev/null 2>&1; then
@@ -56,9 +79,14 @@ ensure_dep() {
     *) ;;
   esac
 
-  if [[ -z "$pkg" ]]; then
+  if (( NO_INSTALL )); then
     echo "Missing dependency: $cmd. Install it manually." >&2
-    return 1
+    exit 1
+  fi
+
+  if [[ -z "$pkg" ]]; then
+    echo "Missing dependency: $cmd. No supported package manager detected; install it manually." >&2
+    exit 1
   fi
 
   echo "Installing $pkg to satisfy $cmd..."
@@ -94,6 +122,10 @@ PY
   esac
 
   if [[ -n "$pkg" ]]; then
+    if (( NO_INSTALL )); then
+      echo "python3-gi not found; install $pkg to enable the centered GTK UI (skipped due to --no-install)." >&2
+      return 0
+    fi
     echo "Installing $pkg to enable the centered GTK UI..."
     install_pkg "$pkg" || echo "Could not install $pkg; falling back to zenity UI." >&2
   fi
@@ -331,7 +363,27 @@ if ! zenity --question \
 fi
 
 if run_efi -n "$selection"; then
-  systemctl reboot
+  # Read back to confirm
+  verify_raw="$(run_efi -v 2>/dev/null || true)"
+  verify_next="$(printf '%s\n' "$verify_raw" | awk '/^BootNext:/ {print $2}')"
+  success_text="BootNext set to ${selection_label} (${selection})."
+  if [[ -n "$verify_next" ]]; then
+    success_text="$success_text\nFirmware now reports BootNext: $verify_next"
+  fi
+
+  if (( NO_REBOOT )); then
+    zenity --info --title="UEFI Boot Switcher" --text="$success_text\n\nNot rebooting because --no-reboot was specified."
+    exit 0
+  fi
+
+  if command -v systemctl >/dev/null 2>&1; then
+    systemctl reboot
+  elif command -v reboot >/dev/null 2>&1; then
+    reboot
+  else
+    zenity --info --title="UEFI Boot Switcher" --text="$success_text\n\nBootNext set. Please reboot manually."
+    exit 0
+  fi
 else
   zenity --error --title="UEFI Boot Switcher" --text="Failed to set BootNext with efibootmgr."
   exit 1

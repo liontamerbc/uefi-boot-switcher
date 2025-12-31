@@ -32,6 +32,7 @@
 ```
 
 <p><strong>Dependencies:</strong> the script will try to install <code>zenity</code>, <code>efibootmgr</code>, and (optionally) <code>python3-gi</code> via your package manager (apt/pacman/dnf/zypper). If your distro uses something else, install those manually first.</p>
+<p><strong>Flags:</strong> <code>--no-install</code> (skip auto-installs), <code>--no-reboot</code> (set BootNext but don’t reboot automatically).</p>
 
 <p align="center">━━✦━━</p>
 
