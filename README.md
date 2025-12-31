@@ -60,5 +60,5 @@
 </p>
 
 <p align="center" style="font-size:12px;">
-  Licensing: GPL-3.0 — see <a href="LICENSE">LICENSE</a>.
+  Licensing: GPL-3.0 — see <a href="LICENSE">LICENSE</a> and <a href="NOTICE">NOTICE</a>.
 </p>
