@@ -1,0 +1,4 @@
+UEFI Boot Switcher - Notices
+
+- This project is provided under GPL-3.0 (see LICENSE).
+- No bundled third-party components beyond system dependencies (zenity, efibootmgr, optional python3-gi). These remain under their system/distribution licenses.
